@@ -1,12 +1,22 @@
-export default function (babel) {
+/** This babel-plugin adds
+    `import { hot } from 'react-hot-loader';`
+*/
+
+export default function(babel) {
   const { types: t } = babel;
 
   return {
-    name: "ast-transform", // not required
+    name: "Hot Export React Components",
     visitor: {
-      Identifier(path) {
-        path.node.name = path.node.name.split('').reverse().join('');
+      Program(path) {
+        path.node.body.unshift(
+          t.ImportDeclaration(
+            [t.ImportSpecifier(t.Identifier("hot"), t.Identifier("hot"))],
+            t.StringLiteral("react-hot-loader")
+          )
+        );
       }
     }
   };
+};
 }
