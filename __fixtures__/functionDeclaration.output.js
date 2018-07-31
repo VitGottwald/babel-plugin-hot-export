@@ -1,4 +1,3 @@
 import { hot } from "react-hot-loader";
-const thingy = "thingy";
-const _component = thingy;
+const _component = function a(b, c) {};
 export default hot(module)(_component);

@@ -21,12 +21,30 @@ export default function(babel) {
         );
       },
       ExportDefaultDeclaration(path) {
-        const node = path.node;
-        node.declaration = decoratedWithHot(t, node.declaration);
+        const declaration = path.get("declaration");
+        if (t.isFunctionDeclaration(declaration)) {
+          path.replaceWithMultiple([functionDeclaration(t, declaration.node), hotExport(t)]);
+        } else {
+          path.replaceWithMultiple([constDeclaration(t, path.node.declaration), hotExport(t)]);
+        }
+        path.stop();
       }
     }
   };
 }
 
-const decoratedWithHot = (t, declaration) =>
-  t.CallExpression(t.CallExpression(t.Identifier("hot"), [t.Identifier("module")]), [declaration]);
+const constDeclaration = (t, declaration) =>
+  t.VariableDeclaration("const", [t.VariableDeclarator(t.Identifier("_component"), declaration)]);
+const functionDeclaration = (t, fn) =>
+  t.VariableDeclaration("const", [
+    t.VariableDeclarator(
+      t.Identifier("_component"),
+      t.FunctionExpression(fn.id, fn.params, fn.body, fn.generator, fn.async)
+    )
+  ]);
+const hotExport = t =>
+  t.ExportDefaultDeclaration(
+    t.CallExpression(t.CallExpression(t.Identifier("hot"), [t.Identifier("module")]), [
+      t.Identifier("_component")
+    ])
+  );
