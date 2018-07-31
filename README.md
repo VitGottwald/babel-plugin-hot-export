@@ -1,2 +1,2 @@
 # babel-plugins
-Babel plugin examples inspired by babel-handbook
+Example from https://astexplorer.net
