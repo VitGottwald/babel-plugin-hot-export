@@ -1,3 +1,3 @@
-# jest setup
+# jest
 
-A simple jest test
+A simple test
