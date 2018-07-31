@@ -6,7 +6,7 @@ export { _Name as Name };
 
 */
 
-export default function(babel) {
+module.exports = function(babel) {
   const { types: t } = babel;
 
   return {
@@ -33,7 +33,7 @@ export default function(babel) {
       }
     }
   };
-}
+};
 
 const constDeclaration = (t, declaration) =>
   t.VariableDeclaration("const", [t.VariableDeclarator(t.Identifier("_component"), declaration)]);
