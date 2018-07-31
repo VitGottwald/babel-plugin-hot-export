@@ -17,14 +17,14 @@ const test = (input, output) =>
     )
   ).toEqual(output);
 
-describe("babel plugin tests", () => {
-  it("should hot-export bound reference", function() {
+describe("hot-exports", () => {
+  it("bound reference", function() {
     const input = fixture("variableReference.input.js");
     const output = fixture("variableReference.output.js");
 
     test(input, output);
   });
-  it("should hot-export function declaration", function() {
+  it("function declaration", function() {
     const input = fixture("functionDeclaration.input.js");
     const output = fixture("functionDeclaration.output.js");
 
