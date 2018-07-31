@@ -1,2 +1,3 @@
-# babel-plugins
-Babel plugin examples inspired by babel-handbook
+# jest setup
+
+A simple jest test
