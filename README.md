@@ -1,2 +1,2 @@
 # babel-plugins
-Babel plugin examples inspired by babel-handbook
+Examples inspired by [babel-handbook](https://github.com/jamiebuilds/babel-handbook)
