@@ -30,4 +30,10 @@ describe("hot-exports", () => {
 
     test(input, output);
   });
+  it("class declaration", function() {
+    const input = fixture("classDeclaration.input.js");
+    const output = fixture("classDeclaration.output.js");
+
+    test(input, output);
+  });
 });

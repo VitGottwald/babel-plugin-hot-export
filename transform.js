@@ -22,7 +22,9 @@ export default function(babel) {
       },
       ExportDefaultDeclaration(path) {
         const declaration = path.get("declaration");
-        if (t.isFunctionDeclaration(declaration)) {
+        if (t.isClassDeclaration(declaration)) {
+          path.replaceWithMultiple([classDeclaration(t, declaration.node), hotExport(t)]);
+        } else if (t.isFunctionDeclaration(declaration)) {
           path.replaceWithMultiple([functionDeclaration(t, declaration.node), hotExport(t)]);
         } else {
           path.replaceWithMultiple([constDeclaration(t, path.node.declaration), hotExport(t)]);
@@ -35,6 +37,15 @@ export default function(babel) {
 
 const constDeclaration = (t, declaration) =>
   t.VariableDeclaration("const", [t.VariableDeclarator(t.Identifier("_component"), declaration)]);
+
+const classDeclaration = (t, cls) =>
+  t.VariableDeclaration("const", [
+    t.VariableDeclarator(
+      t.Identifier("_component"),
+      t.ClassExpression(cls.id, cls.superClass, cls.body, []) // no decorators
+    )
+  ]);
+
 const functionDeclaration = (t, fn) =>
   t.VariableDeclaration("const", [
     t.VariableDeclarator(
@@ -42,6 +53,7 @@ const functionDeclaration = (t, fn) =>
       t.FunctionExpression(fn.id, fn.params, fn.body, fn.generator, fn.async)
     )
   ]);
+
 const hotExport = t =>
   t.ExportDefaultDeclaration(
     t.CallExpression(t.CallExpression(t.Identifier("hot"), [t.Identifier("module")]), [
