@@ -6,9 +6,9 @@ import fs from "fs";
 const fixture = name => fs.readFileSync(`./__fixtures__/${name}`, "utf8");
 
 describe("babel plugin tests", () => {
-  it("should find module: presets", function() {
-    const input = fixture("transform.input.js");
-    const output = fixture("transform.output.js");
+  it("should hot-export variable reference", function() {
+    const input = fixture("variableReference.input.js");
+    const output = fixture("variableReference.output.js");
 
     expect(
       prettier.format(
