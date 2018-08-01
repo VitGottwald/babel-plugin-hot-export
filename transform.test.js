@@ -1,39 +1,35 @@
 import * as babel from "babel-core";
 import prettier from "prettier";
+import util from "util";
 
 import fs from "fs";
+const readFile = util.promisify(fs.readFile);
+const fixture = name => readFile(`./__fixtures__/${name}`, "utf8");
 
-const fixture = name => fs.readFileSync(`./__fixtures__/${name}`, "utf8");
-const test = (input, output) =>
-  expect(
-    prettier.format(
-      babel.transform(input, {
-        filename: "filename.js",
-        babelrc: false,
-        retainLines: true,
-        plugins: ["./transform.js"]
-      }).code,
-      { parser: "babylon" }
-    )
-  ).toEqual(output);
+const test = (done, input, output) =>
+  Promise.all([fixture(input), fixture(output)]).then(files => {
+    expect(
+      prettier.format(
+        babel.transform(files[0], {
+          filename: "filename.js",
+          babelrc: false,
+          retainLines: true,
+          plugins: ["./transform.js"]
+        }).code,
+        { parser: "babylon" }
+      )
+    ).toEqual(files[1]);
+    done();
+  });
 
 describe("hot-exports", () => {
-  it("bound reference", function() {
-    const input = fixture("variableReference.input.js");
-    const output = fixture("variableReference.output.js");
-
-    test(input, output);
+  it("bound reference", done => {
+    test(done, "variableReference.input.js", "variableReference.output.js");
   });
-  it("function declaration", function() {
-    const input = fixture("functionDeclaration.input.js");
-    const output = fixture("functionDeclaration.output.js");
-
-    test(input, output);
+  it("function declaration", done => {
+    test(done, "functionDeclaration.input.js", "functionDeclaration.output.js");
   });
-  it("class declaration", function() {
-    const input = fixture("classDeclaration.input.js");
-    const output = fixture("classDeclaration.output.js");
-
-    test(input, output);
+  it("class declaration", done => {
+    test(done, "classDeclaration.input.js", "classDeclaration.output.js");
   });
 });
