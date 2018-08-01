@@ -1,9 +1,11 @@
 {
   "name": "babel-plugin-hot-export",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Wrap Default Export with react-hot-loader",
   "main": "transform.js",
-  "keywords": ["babel-plugin"],
+  "keywords": [
+    "babel-plugin"
+  ],
   "repository": "https://github.com/baremetalfreak/babel-plugins.git",
   "license": "MIT",
   "devDependencies": {
