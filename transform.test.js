@@ -19,7 +19,7 @@ const test = (done, input, output = null) => {
           filename: "filename.js",
           babelrc: false,
           retainLines: true,
-          plugins: ["./transform.js"]
+          plugins: [["./transform.js", {karel: "karel"}]]
         }).code,
         { parser: "babylon" }
       )

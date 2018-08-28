@@ -5,14 +5,14 @@ const _Name = hot(module)(Name);
 export { _Name as Name };
 
 */
-
 module.exports = function(babel) {
   const { types: t } = babel;
 
   return {
     name: "Hot Export React Components",
     visitor: {
-      Program(path) {
+      Program(path, state) {
+        console.log(state.file.opts.filename);
         path.node.body.unshift(
           t.ImportDeclaration(
             [t.ImportSpecifier(t.Identifier("hot"), t.Identifier("hot"))],
