@@ -5,6 +5,7 @@ const _Name = hot(module)(Name);
 export { _Name as Name };
 
 */
+const p = require("path");
 
 module.exports = function(babel) {
   const { types: t } = babel;
@@ -12,51 +13,37 @@ module.exports = function(babel) {
   return {
     name: "Hot Export React Components",
     visitor: {
-      Program(path) {
-        path.node.body.unshift(
+      Program(path, state) {
+        if (
+          state.opts.files.every(file => p.resolve(file) !== p.resolve(state.file.opts.filename))
+        ) {
+          return;
+        }
+        path.unshiftContainer(
+          "body",
           t.ImportDeclaration(
             [t.ImportSpecifier(t.Identifier("hot"), t.Identifier("hot"))],
             t.StringLiteral("react-hot-loader")
           )
         );
       },
-      ExportDefaultDeclaration(path) {
-        const declaration = path.get("declaration");
-        if (t.isClassDeclaration(declaration)) {
-          path.replaceWithMultiple([classDeclaration(t, declaration.node), hotExport(t)]);
-        } else if (t.isFunctionDeclaration(declaration)) {
-          path.replaceWithMultiple([functionDeclaration(t, declaration.node), hotExport(t)]);
-        } else {
-          path.replaceWithMultiple([constDeclaration(t, path.node.declaration), hotExport(t)]);
+      ExportDefaultDeclaration(path, state) {
+        if (
+          state.opts.files.every(file => p.resolve(file) !== p.resolve(state.file.opts.filename))
+        ) {
+          return;
         }
-        path.stop();
+        if (t.isClassDeclaration(path.get("declaration"))) {
+          const declaration = path.get("declaration").node;
+          const identifier = () => declaration.id || t.Identifier("__component");
+          declaration.id = identifier();
+          path.insertBefore(declaration);
+          path.node.declaration = t.CallExpression(
+            t.CallExpression(t.Identifier("hot"), [t.Identifier("module")]),
+            [identifier()]
+          );
+        }
       }
     }
   };
 };
-
-const constDeclaration = (t, declaration) =>
-  t.VariableDeclaration("const", [t.VariableDeclarator(t.Identifier("_component"), declaration)]);
-
-const classDeclaration = (t, cls) =>
-  t.VariableDeclaration("const", [
-    t.VariableDeclarator(
-      t.Identifier("_component"),
-      t.ClassExpression(cls.id, cls.superClass, cls.body, []) // no decorators
-    )
-  ]);
-
-const functionDeclaration = (t, fn) =>
-  t.VariableDeclaration("const", [
-    t.VariableDeclarator(
-      t.Identifier("_component"),
-      t.FunctionExpression(fn.id, fn.params, fn.body, fn.generator, fn.async)
-    )
-  ]);
-
-const hotExport = t =>
-  t.ExportDefaultDeclaration(
-    t.CallExpression(t.CallExpression(t.Identifier("hot"), [t.Identifier("module")]), [
-      t.Identifier("_component")
-    ])
-  );
