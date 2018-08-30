@@ -33,14 +33,15 @@ module.exports = function(babel) {
         ) {
           return;
         }
-        if (t.isClassDeclaration(path.get("declaration"))) {
-          const declaration = path.get("declaration").node;
-          const identifier = () => declaration.id || t.Identifier("__component");
-          declaration.id = identifier();
+        const declarationPath = path.get("declaration");
+        if (t.isClassDeclaration(declarationPath)) {
+          const declaration = declarationPath.node;
+          const id = declaration.id || path.scope.generateUidIdentifierBasedOnNode(path.node.id);
+          declaration.id = id;
           path.insertBefore(declaration);
           path.node.declaration = t.CallExpression(
             t.CallExpression(t.Identifier("hot"), [t.Identifier("module")]),
-            [identifier()]
+            [id]
           );
         }
       }

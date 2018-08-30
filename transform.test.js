@@ -33,15 +33,18 @@ const test = (done, { input, output = null, filename = "filename.js", parameter 
 };
 
 describe("hot-exports", () => {
-  it("class declaration", done => {
-    test(done, { input: "classDeclaration" });
-  });
-  it("file name does not match", done => {
+  it("checks for filename match", done => {
     test(done, {
       input: "classDeclaration.input.js",
       output: "classDeclaration.input.js",
       filename: "filename-a.txt",
       parameter: { files: ["filename-b.txt"] }
     });
+  });
+  it("transforms class declaration", done => {
+    test(done, { input: "classDeclaration" });
+  });
+  it("transforms anonymous class declaration", done => {
+    test(done, { input: "anonymousClassDeclaration" });
   });
 });
