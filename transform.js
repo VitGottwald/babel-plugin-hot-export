@@ -32,7 +32,7 @@ module.exports = function(babel) {
           return;
         }
         const declarationPath = path.get("declaration");
-        if (t.isIdentifier(declarationPath)) {
+        if (t.isIdentifier(declarationPath) || t.isExpression(declarationPath)) {
           path.node.declaration = hotExpression(t, declarationPath.node);
         } else if (
           t.isClassDeclaration(declarationPath) ||

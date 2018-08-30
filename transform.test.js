@@ -56,4 +56,7 @@ describe("hot-exports", () => {
   it("transforms variableReference", done => {
     test(done, { input: "variableReference" });
   });
+  it("transforms expression", done => {
+    test(done, { input: "expression" });
+  });
 });
