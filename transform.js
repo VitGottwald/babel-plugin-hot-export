@@ -34,7 +34,7 @@ module.exports = function(babel) {
           return;
         }
         const declarationPath = path.get("declaration");
-        if (t.isClassDeclaration(declarationPath)) {
+        if (t.isClassDeclaration(declarationPath) || t.isFunctionDeclaration(declarationPath)) {
           const declaration = declarationPath.node;
           const id = declaration.id || path.scope.generateUidIdentifierBasedOnNode(path.node.id);
           declaration.id = id;

@@ -47,4 +47,10 @@ describe("hot-exports", () => {
   it("transforms anonymous class declaration", done => {
     test(done, { input: "anonymousClassDeclaration" });
   });
+  it("transforms function declaration", done => {
+    test(done, { input: "functionDeclaration" });
+  });
+  it("transforms anonymous function declaration", done => {
+    test(done, { input: "anonymousFunctionDeclaration" });
+  });
 });
