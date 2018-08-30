@@ -34,17 +34,23 @@ module.exports = function(babel) {
           return;
         }
         const declarationPath = path.get("declaration");
-        if (t.isClassDeclaration(declarationPath) || t.isFunctionDeclaration(declarationPath)) {
+        if (t.isIdentifier(declarationPath)) {
+          path.node.declaration = hotExpression(t, declarationPath.node);
+        } else if (
+          t.isClassDeclaration(declarationPath) ||
+          t.isFunctionDeclaration(declarationPath)
+        ) {
           const declaration = declarationPath.node;
           const id = declaration.id || path.scope.generateUidIdentifierBasedOnNode(path.node.id);
           declaration.id = id;
           path.insertBefore(declaration);
-          path.node.declaration = t.CallExpression(
-            t.CallExpression(t.Identifier("hot"), [t.Identifier("module")]),
-            [id]
-          );
+          path.node.declaration = hotExpression(t, id);
         }
       }
     }
   };
 };
+
+function hotExpression(t, id) {
+  return t.CallExpression(t.CallExpression(t.Identifier("hot"), [t.Identifier("module")]), [id]);
+}

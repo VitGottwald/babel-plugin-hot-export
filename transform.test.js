@@ -53,4 +53,7 @@ describe("hot-exports", () => {
   it("transforms anonymous function declaration", done => {
     test(done, { input: "anonymousFunctionDeclaration" });
   });
+  it("transforms variableReference", done => {
+    test(done, { input: "variableReference" });
+  });
 });
