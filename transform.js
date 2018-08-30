@@ -1,9 +1,7 @@
 /** This babel-plugin adds
-    `import { hot } from 'react-hot-loader';`
+  import { hot } from 'react-hot-loader';
 
-const _Name = hot(module)(Name);
-export { _Name as Name };
-
+  export default hot(module)(__original_default_export)
 */
 const p = require("path");
 
