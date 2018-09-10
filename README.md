@@ -27,7 +27,11 @@ is your "root" component and should be hot-exported.
 ```
 // webpack.dev.config
 
-const reactRenderRoots = fs.readFileSync('./renderReactRoots.txt', 'utf8').split('\n');
+const path = require('path');
+const files = fs
+  .readFileSync('./renderReactRoots.txt', 'utf8')
+  .split('\n')
+  .map(p => path.resolve(p);
 
 module.exports = {
   ...
@@ -35,14 +39,15 @@ module.exports = {
     rules: [
         // Hot Export React Root Components
         {
-            test(module) {
-                return reactRenderRoots.includes(module);
-            },
+            test: /*.js$/,
+            exclude: /node_modules/,
             use: {
                 loader: 'babel-loader',
                 options: {
-                    babelrc: false,
-                    plugins: ['hot-export'],
+                    babelrc: true,
+                    plugins: [
+                      ['hot-export', { files }]
+                    ],
                 },
             },
         },
